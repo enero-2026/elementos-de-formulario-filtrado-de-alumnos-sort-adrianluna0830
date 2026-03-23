@@ -7,8 +7,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 export default function Alumnos(){
   
   const [alumnos, setAlumnos] = useState([]);
+  const [buscaAlumno, setBuscaAlumno] = useState('');
   
-  
+  const alumnosFiltrados = alumnos.filter(alumno => 
+    alumno.nombre.toLowerCase().includes(buscaAlumno.toLowerCase()) ||
+    alumno.matricula.includes(buscaAlumno)
+  );
   
   useEffect(()=> {
     setTimeout(()=>{
@@ -298,41 +302,32 @@ export default function Alumnos(){
   
 }, []);
 
-if(!alumnos.length){
+if(alumnos.length === 0){
   return(
     <Text>Cargando alumnos...</Text>
   )
 }
-if(alumnos.length ===0 ){
-  return(
-    <Text> No hay alumnos</Text>
-  )
-}
 
 return(
-  
-  //Op 1
-  
-  
-  // <TextInput placeholder="hola..."></TextInput> de React native y <TextInput> de Paper no se pueden usar juntos
   <>
-  
-  
-  
+  <TextInput
+    label="Buscar alumno"
+    value={buscaAlumno}
+    onChangeText={text => setBuscaAlumno(text)}
+    mode="outlined"
+    style={{ margin: 10 }}
+  />
   <FlatList
-  data={alumnosFiltrados}
-  keyExtractor={(item) => item.matricula}
-  renderItem={({ item }) => (
-    <>
-    
-    <List.Item title={item.nombre} description={item.matricula} left={props => <MaterialIcons name="account-circle" size={40}></MaterialIcons>}></List.Item>
-    </>
-  )} />
+    data={alumnosFiltrados}
+    keyExtractor={(item) => item.matricula}
+    renderItem={({ item }) => (
+      <List.Item
+        title={item.nombre}
+        description={item.matricula}
+        left={props => <MaterialIcons name="account-circle" size={40} />}
+      />
+    )}
+  />
   </>
-  
-  //Op 2: Map sin FlatList
-  // alumnos.map((alumno) => (
-    //     <List.Item key={alumno.matricula} title={alumno.nombre} left={props => <MaterialIcons name="account-circle" size={40}></MaterialIcons>}></List.Item>
-  // ))
 )
 }
